@@ -1,0 +1,186 @@
+#include <gtk/gtk.h>
+#include "view.h"
+
+Norme de Fichier .deeivice
+1. Format de Fichier
+
+    Type : JSON
+    Extension : .deeivice
+
+2. Structure du Fichier
+
+{
+  "version": "1.0",
+  "machine": {
+    "name": "NomMachine",
+    "arduino ports": [
+      {
+        "id": 1,
+      }
+    ],
+    "technology": "infrarouge",
+    "light_settings": {
+      "intensity": 75,
+      "speed": 2.5,
+      "color": "#FF5733"
+    }
+    "status":{
+        "arduino status": connected
+        }
+    }
+  }
+}
+
+3. Description des Champs
+
+    version :
+        Type : Chaîne de caractères
+        Description : Indique la version de la norme utilisée. Doit être "1.0" pour cette version.
+
+    machine :
+        name :
+            Type : Chaîne de caractères (UTF-8)
+            Description : Nom de la machine. Doit contenir entre 1 et 50 caractères.
+        ports :
+            Type : Tableau d'objets
+            Description : Liste des ports utilisés par la machine.
+            Champs :
+                id :
+                    Type : Nombre entier
+                    Description : Identifiant unique du port.
+                type :
+                    Type : Chaîne de caractères
+                    Description : Type de port (par exemple, "Arduino").
+        technology :
+            Type : Chaîne de caractères
+            Description : Type de technologie utilisée (par exemple, "infrarouge", "LED").
+        light_settings :
+            intensity :
+                Type : Nombre entier
+                Description : Intensité de la lumière, exprimée en pourcentage (0-100).
+            speed :
+                Type : Nombre flottant
+                Description : Vitesse d'allumage ou d'extinction, exprimée en secondes.  (ou milli secondes ????)
+            color :
+                Type : Chaîne de caractères
+                Description : Code couleur en hexadécimal (par exemple, "#FF5733").
+            status :
+                Type : Chaîne de caractères
+                Description : Etat de la machine (connectée, déconnectée...)
+
+4. Règles de Validation
+
+    name : Doit être une chaîne UTF-8 de longueur maximale 50 caractères.
+    intensity : Doit être un entier compris entre 0 et 100.
+    speed : Doit être un nombre flottant positif.
+    color : Doit être un code couleur hexadécimal valide.
+    status : Doit être un chaîne de caractère telle que "connecté" ou "déconnecté"  (idées d'autres status?)
+
+
+5. Versions et Compatibilité
+
+    Gestion des Versions : La version actuelle est "1.0". Les futures versions seront indiquées par un changement de ce numéro.
+    Compatibilité : Les nouvelles versions seront rétrocompatibles avec les versions précédentes, sauf indication contraire.
+
+
+
+
+
+
+// Fonction appelée lorsque l'un des boutons est cliqué
+void toolbar_clicked(GtkButton *button, gpointer user_data) {
+    GtkStack *stack = GTK_STACK(user_data);
+    const gchar *page = g_object_get_data(G_OBJECT(button), "page");
+
+    if (page) {
+        gtk_stack_set_visible_child_name(stack, page);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+char* btn_add_existing_clicked(GtkButton *button, gpointer user_data) {
+    GtkWidget *dialog;
+    GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+    gint res;
+    char *filename = NULL;
+
+    // Création du dialogue de sélection de fichier
+    dialog = gtk_file_chooser_dialog_new("Select a file",
+                                         NULL,
+                                         action,
+                                         "_Cancel", GTK_RESPONSE_CANCEL,
+                                         "_Open", GTK_RESPONSE_ACCEPT,
+                                         NULL);
+
+    // Filtre pour n'afficher que les fichiers .txt
+    GtkFileFilter *filter = gtk_file_filter_new();
+    gtk_file_filter_set_name(filter, "Text files");
+    gtk_file_filter_add_pattern(filter, "*.txt");
+    gtk_file_chooser_add_filter(GTK_FILE_CHOOSER(dialog), filter);
+
+    // Affichage du dialogue et attente de la réponse de l'utilisateur
+    res = gtk_dialog_run(GTK_DIALOG(dialog));
+
+    if (res == GTK_RESPONSE_ACCEPT) {
+        GtkFileChooser *chooser = GTK_FILE_CHOOSER(dialog);
+        filename = gtk_file_chooser_get_filename(chooser);
+
+        // Vérification de l'extension .txt
+        if (g_str_has_suffix(filename, ".txt")) {
+            gtk_widget_destroy(dialog);
+            return filename; // L'appelant doit libérer la mémoire avec g_free()
+        } else {
+            show_error_dialog("File not compatible, please select a .txt file.");
+            g_free(filename);
+            filename = NULL;
+        }
+    }
+
+    // Destruction du dialogue après utilisation
+    gtk_widget_destroy(dialog);
+    return NULL;
+}
+
+
+
+
+
+
+
+
+
+
+// Fonction pour afficher une fenêtre d'erreur avec un message
+void show_error_dialog(const char *message) {
+    GtkWidget *error_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_title(GTK_WINDOW(error_window), "Error");
+    gtk_window_set_default_size(GTK_WINDOW(error_window), 400, 200);
+
+    GtkWidget *vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_container_add(GTK_CONTAINER(error_window), vbox);
+
+    // Ajout du message d'erreur
+    GtkWidget *label = gtk_label_new(message);
+    gtk_box_pack_start(GTK_BOX(vbox), label, TRUE, TRUE, 10);
+
+    // Ajout du bouton OK pour fermer la fenêtre
+    GtkWidget *ok_button = gtk_button_new_with_label("OK");
+    gtk_box_pack_start(GTK_BOX(vbox), ok_button, FALSE, FALSE, 10);
+
+    // Signal pour fermer la fenêtre en cliquant sur OK
+    g_signal_connect(ok_button, "clicked", G_CALLBACK(gtk_widget_destroy), error_window);
+    g_signal_connect(error_window, "destroy", G_CALLBACK(gtk_widget_destroy), NULL);
+
+    gtk_widget_show_all(error_window);
+}
+

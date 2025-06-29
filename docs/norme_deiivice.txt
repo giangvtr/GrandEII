@@ -1,0 +1,5 @@
+GrandEII v1.0 device_file
+
+[nom de la machine : un char* entre 1 et 30 caractères]
+[technologie : un truc faisant parti de la enum des technologies possibles]
+[]

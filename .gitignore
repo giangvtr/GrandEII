@@ -1,0 +1,13 @@
+.idea
+GRANDEII_PC/cmake-build-debug
+GRANDEII_PC/src/model/cmake-build-debug
+cmake-build-debug
+/docs/output
+out
+*/out
+GRANDEII_PC/src/model/lib/cJSON/.git
+GRANDEII_PC/src/model/lib/cJSON/.travis.yml
+GRANDEII_PC/src/model/lib/cJSON/.gitignore
+GRANDEII_PC/src/model/lib/cJSON/.gitattributes
+GRANDEII_PC/src/model/lib/cJSON/.editorconfig
+GRANDEII_PC/src/model/lib/cJSON/.github

@@ -1,0 +1,159 @@
+{
+	"nbGroups":	3,
+	"0":	{
+		"name":	"Group 1",
+		"nbLights":	2,
+		"Lights":	[{
+				"name":	"Light 2",
+				"technology":	1,
+				"nbCouleurs":	0,
+				"nbFonctions":	0,
+				"Couleurs":	[],
+				"functs":	[]
+			}, {
+				"name":	"Light 1",
+				"technology":	1,
+				"nbCouleurs":	10,
+				"nbFonctions":	1,
+				"Couleurs":	[{
+						"r":	191,
+						"g":	255,
+						"b":	0,
+						"IR Code":	0
+					}, {
+						"r":	255,
+						"g":	192,
+						"b":	203,
+						"IR Code":	0
+					}, {
+						"r":	128,
+						"g":	0,
+						"b":	128,
+						"IR Code":	0
+					}, {
+						"r":	255,
+						"g":	165,
+						"b":	0,
+						"IR Code":	0
+					}, {
+						"r":	255,
+						"g":	0,
+						"b":	255,
+						"IR Code":	0
+					}, {
+						"r":	0,
+						"g":	255,
+						"b":	255,
+						"IR Code":	0
+					}, {
+						"r":	255,
+						"g":	255,
+						"b":	0,
+						"IR Code":	0
+					}, {
+						"r":	0,
+						"g":	0,
+						"b":	255,
+						"IR Code":	0
+					}, {
+						"r":	0,
+						"g":	255,
+						"b":	0,
+						"IR Code":	0
+					}, {
+						"r":	255,
+						"g":	0,
+						"b":	0,
+						"IR Code":	0
+					}],
+				"functs":	[{
+						"Function":	1,
+						"IR Code":	286397204
+					}]
+			}]
+	},
+	"1":	{
+		"name":	"Group 2",
+		"nbLights":	1,
+		"Lights":	[{
+				"name":	"Projecteur Bleu",
+				"technology":	1,
+				"nbCouleurs":	0,
+				"nbFonctions":	0,
+				"Couleurs":	[],
+				"functs":	[]
+			}]
+	},
+	"2":	{
+		"name":	"Group 3",
+		"nbLights":	2,
+		"Lights":	[{
+				"name":	"Light 1",
+				"technology":	1,
+				"nbCouleurs":	10,
+				"nbFonctions":	1,
+				"Couleurs":	[{
+						"r":	255,
+						"g":	0,
+						"b":	0,
+						"IR Code":	0
+					}, {
+						"r":	0,
+						"g":	255,
+						"b":	0,
+						"IR Code":	0
+					}, {
+						"r":	0,
+						"g":	0,
+						"b":	255,
+						"IR Code":	0
+					}, {
+						"r":	255,
+						"g":	255,
+						"b":	0,
+						"IR Code":	0
+					}, {
+						"r":	0,
+						"g":	255,
+						"b":	255,
+						"IR Code":	0
+					}, {
+						"r":	255,
+						"g":	0,
+						"b":	255,
+						"IR Code":	0
+					}, {
+						"r":	255,
+						"g":	165,
+						"b":	0,
+						"IR Code":	0
+					}, {
+						"r":	128,
+						"g":	0,
+						"b":	128,
+						"IR Code":	0
+					}, {
+						"r":	255,
+						"g":	192,
+						"b":	203,
+						"IR Code":	0
+					}, {
+						"r":	191,
+						"g":	255,
+						"b":	0,
+						"IR Code":	0
+					}],
+				"functs":	[{
+						"Function":	1,
+						"IR Code":	336794129
+					}]
+			}, {
+				"name":	"Light 2",
+				"technology":	1,
+				"nbCouleurs":	0,
+				"nbFonctions":	0,
+				"Couleurs":	[],
+				"functs":	[]
+			}]
+	}
+}

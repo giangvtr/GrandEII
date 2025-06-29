@@ -1,0 +1,46 @@
+cmake_minimum_required(VERSION 3.10)
+project(model C)
+
+set(CMAKE_C_COMPILER gcc)
+set(CMAKE_C_FLAGS "-Wall -MMD")
+set(CMAKE_EXE_LINKER_FLAGS "")
+set(LIBS "")
+
+option(DEBUG "Enable debug mode" OFF)
+option(MYTEST "Enable unit tests" OFF)
+
+if(DEBUG)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
+endif()
+
+# Main executable
+add_executable(main_console light.c color.c list_common.c group.c)
+
+# Custom commands for running tests and generating coverage reports
+if(MYTEST)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -coverage")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--wrap=rand -coverage")
+
+    # Use a proper list for linking libraries
+    set(LIBS cmocka)
+
+    add_executable(unit_test light.c color.c list_common.c list_light.c unit_test/UTest_main.c unit_test/UTest-color.c unit_test/UTest-light.c unit_test/UTest-list.c)
+    target_link_libraries(unit_test ${LIBS})
+
+    # Apply coverage flags correctly
+    set_source_files_properties(light.c color.c PROPERTIES COMPILE_FLAGS "-coverage")
+endif()
+
+
+# Cleanup target
+# Cleanup target - removes all generated files AND environment-specific folders
+add_custom_target(clean_all
+        COMMAND echo "Cleaning up build files and environment-specific directories..."
+        COMMAND rm -f *.o *.d *.gcno *.gcda *.gcov *.info *.log *.exe
+        COMMAND rm -rf out
+        COMMAND rm -rf build
+        COMMAND rm -rf cmake-build-debug
+        COMMAND rm cmake_install.cmake
+        COMMAND rm CMakeCache.txt
+        COMMENT "Done cleaning!"
+)

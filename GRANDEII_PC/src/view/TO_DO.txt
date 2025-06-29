@@ -1,0 +1,7 @@
+-avancer onglet LIVE (problème lors de l'exécution, plantage lorsque l'on clique sur l'un des onglets add, live ou patch)
+-apprendre doxygen
+-clean le code et le relire
+-finir la norme des fichiers deiivice (commencée, besoin d'un retour)
+-mettre en place des tests
+-connecter le CSS correctement
+-faire la fonction test compatibility
