@@ -1,169 +1,81 @@
-# Projet C — Grand EII
-
-## Objectif
-
-Développer un logiciel permettant de contrôler des lumières infrarouges via un Arduino.
+# Project C — Grand EII
+*This repository is forked from the original Gitlab repository*
+Developed by **BM, DM, EA, HB, and VG**.   
 
 ---
 
-## 📋 TODO
+## About the Project
+This project aims to create a **light management software using infrared (IR) commands**.  
+Users can add IR-controllable lights by capturing codes from their original remote controls and mapping actions to them.  
 
-- [ ] Modifier la norme pour les fichiers JSON : un fichier par groupe de lumières
+The motivation came from:
+- The inconvenience of using separate remotes for each light (loss, batteries, ergonomics, lack of synchronization).  
+- Inspiration from **GrandMA**, a professional lighting control software for stage and live performances.  
 
----
+To support a wide variety of lights, the software provides **color and intensity control**, ensuring users can achieve their desired effects.  
 
-## SETUP POUR PC
-### 0. Dépendances:
- - Le programme ne marche que sur un système Linux.
- - Afin d'exectuer GRANDEII_PC, vous aurez besoin de `gtk3` avec `GLib 2.80`.
- - Afin d'avoir les informations sur le coverage, vous aurez besoin de `gcov`
- - Afin d'avoir les informations sur les fuites de mémoires, vous aurez besoin de `valgrind`
-
-### 1. Les branches principales
-
-| Branche         | Description                                               |
-|----------------|-----------------------------------------------------------|
-| `communication`| Communication entre le logiciel et l’Arduino             |
-| `view`         | Interface graphique utilisateur (GUI)                    |
-| `model`        | Structures de données et base de données                 |
-| `unit-tests`   | Tests unitaires, principalement dans `src/unit_tests/`   |
+**Prototype hardware**: Arduino MEGA 2560 with IR emitters/receivers.  
 
 ---
 
-### 2. Cloner une branche
+## For End Users
+### Requirements
+- Linux system  
+- Install `gtk3` with `GLib 2.80`  
 
-#### a) Première fois
-
+### Run the Program
 ```bash
-# Remplacez <branch-name> et <repository-url> par les valeurs appropriées
-git clone --single-branch --branch <branch-name> <repository-url>
+cd GRAND_EII/src/build
+./GRANDEII_PC
 ```
+### Arduino Setup
+- Install Arduino IDE
+- Upload GRANDEII_ARDUINO.ino to your Arduino board
 
-#### b) Si vous avez déjà un dépôt local
+---
 
-```bash
-# Toujours tirer les dernières modifications avant de commencer à travailler
-git pull origin <branch-name>
+## For developpers
+### Dependencies
+- Linux system
+- gtk3 with GLib 2.80
+- gcov (test coverage)
+- valgrind (memory check)
+- lcov (HTML coverage reports, optional)
+
+### Branch Structure
+- communication → Arduino ↔ PC communication
+- view → GUI (GTK-based)
+- model → Data structures & business logic
+- unit-tests → Unit tests (src/unit_tests/)
+
+### Clone a Branch
+`git clone --single-branch --branch <branch> <repo-url>`
+
+### Build & Run
 ```
-
-📌 **Dans CLion** :
-
-- Cliquez sur l’icône Git dans la barre du haut
-- Sélectionnez "Update Project" (Ctrl+T)
-- Choisissez la branche désirée, puis "Checkout"
-
----
-
-### 3. Charger les cibles CMake dans CLion
-
-- Naviguez vers `GRANDEII_PC/src`
-- Clic droit sur `CMakeLists.txt` > *Reload CMake Project*
-- Les cibles apparaîtront automatiquement dans l’interface via l’icône d’exécution
-
----
-
-### 4. Compiler et exécuter les tests
-
-📌 **Dans CLion** :
-
-- Sélectionnez la cible dans la liste déroulante en haut à droite (ex: `UNIT_TESTS` ou `MAIN_CONSOLE`)
-- Cliquez sur le triangle vert ▶️ pour compiler et exécuter
-- Vous pouvez également configurer les options de build dans `Run > Edit Configurations`
-
----
-
-📌 **Dans le Terminal** :
-```bash
 cd GRAND_EII/src
-mkdir build
-cd build
-
-# Compilation de base
+mkdir build && cd build
 cmake ..
-
-#Pour activer le mode de DEBUG ainsi de cover:
-# Rendez-vous ligne 10 de CMakeLists.txt mettez :
-#   option(COVER "Generate coverage data" "ON")
-# Mettez :
-#   option(COVER "Generate coverage data" "OFF") Si vous ne voulez pas de cela
-
-
-# Compilation
 make
 
-# Exécution
-./UNIT_TESTS #Pour les unit tests
-./GRANDEII_PC #Pour le programme principal
-# Nettoyage (si nécessaire)
-./clean_all
+./UNIT_TESTS   # run unit tests
+./GRANDEII_PC  # run main program
+
 ```
 
----
-
-### 5. Générer un rapport de couverture de tests (pour les testeurs)
-**Dans CLion** :
-- Clic droit sur la cible `UNIT_TESTS` > *Run with Coverage*
-- Visualisez les lignes couvertes comme dans le rapport HTML
-
-```bash
-# Capturer la couverture (nécessite lcov)
+### Run with Coverage
+```
 lcov --capture --directory . --output-file coverage.info
-
-# Générer un rapport HTML
 genhtml coverage.info --output-directory out
-
-# Ouvrir le rapport (Linux)
 xdg-open out/index.html
 ```
 
----
-
-### 6. Commit de vos modifications
-📌 **Dans CLion** :
-- Cliquez sur l’icône Git (colonne de gauche, 2e onglet)
-- Cochez les fichiers à inclure
-- Rédigez un message de commit
-- Cliquez sur "Commit" ou "Commit and Push"
-
-📌 **Dans Terminal** :
-
-#### a) Vérifiez les changements
-
-```bash
+### Commit Workflow
+```
 git status
-git diff
-```
-
-#### b) Ajoutez vos fichiers
-
-```bash
-# Ajouter un fichier spécifique
 git add <file>
-
-# Ajouter tous les fichiers dans le répertoire courant
-git add .
-
-# Ajouter uniquement les fichiers modifiés
-git add -u
+git commit -m "descriptive message"
+git push origin <branch>
 ```
 
-#### c) Vérifiez ce qui est mis en scène
-
-```bash
-git diff --staged
-```
-
-#### d) Faites un commit descriptif
-
-```bash
-git commit -m "<message>"
-git push origin <branch-name>
-# ex : git push origin model
-```
-
-💡 *Conseil* : privilégiez des commits petits et ciblés (commits atomiques).
-
----
-## SETUP POUR ARDUINO
-
-Téléchargez Arduino IDE et lancer le programme GRANDEII_ARDUINO.ino
+💡 Keep commits small and focused.
