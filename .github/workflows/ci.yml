@@ -42,7 +42,7 @@ jobs:
         working-directory: GRANDEII_PC/src/build
         run: |
           lcov --capture --directory . --output-file coverage.info --ignore-errors mismatch,gcov,source
-          lcov --remove coverage.info '/usr/*' '*/unit_test/*' '*/cJSON/*' '*/arduino/*' '*/view/*' --output-file coverage.info --ignore-errors unused
+          lcov --remove coverage.info '/usr/*' '*/unit_test/*' '*/cJSON/*' '*/arduino/*' '*/view/*' '*/controller/*' --output-file coverage.info --ignore-errors unused
           genhtml coverage.info --output-directory coverage-html --ignore-errors source
 
       - name: Upload coverage report

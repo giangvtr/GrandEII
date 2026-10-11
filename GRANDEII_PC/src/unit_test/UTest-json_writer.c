@@ -151,3 +151,9 @@ void test_write_device_with_no_colors_or_functions(void **state) {
     cJSON_Delete(root);
     deleteGroup(group);
 }
+
+// Writing to a missing directory must report the error and not crash
+void test_write_device_unwritable_path(void **state) {
+    (void)state;
+    write_device_file(NULL, 0, "/nonexistent_dir_for_tests/out.json");
+}

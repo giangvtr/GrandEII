@@ -14,5 +14,6 @@ void test_write_device_with_one_group(void **state);
 void test_write_device_with_empty_group(void **state);
 void test_write_device_with_no_groups(void **state);
 void test_write_device_with_no_colors_or_functions(void **state);
+void test_write_device_unwritable_path(void **state);
 
 #endif //UTEST_JSON_WRITER_H

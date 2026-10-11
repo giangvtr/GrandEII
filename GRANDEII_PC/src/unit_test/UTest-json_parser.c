@@ -15,6 +15,9 @@ static const char *no_file_path = TEST_DATA_PATH "/nonexistent.json";
 static const char *multiple_groups_path = TEST_DATA_PATH "/multiple_groups.json";
 static const char *no_lights_path = TEST_DATA_PATH "/no_lights.json";
 
+static const char *no_nbgroups_path = TEST_DATA_PATH "/no_nbgroups.json";
+static const char *bad_group_path = TEST_DATA_PATH "/bad_group.json";
+
 // deleteGroup frees the group itself
 static void free_groups(Group **groups, int nbGroups) {
     for (int i = 0; i < nbGroups; i++) deleteGroup(groups[i]);
@@ -100,4 +103,21 @@ void test_parse_lights_colors(void **state){
     assert_non_null(color);
     assert_int_equal(color->r, 255);
     free_groups(groups, nbGroups);
+}
+
+void test_parse_missing_nbgroups(void **state) {
+    (void)state;
+    int nbGroups = 0;
+    Group **groups = parse_device_file(no_nbgroups_path, &nbGroups);
+    assert_null(groups);
+    assert_int_equal(nbGroups, -1);
+}
+
+// The second group has no name: the first, already parsed group must be released
+void test_parse_group_missing_name(void **state) {
+    (void)state;
+    int nbGroups = 0;
+    Group **groups = parse_device_file(bad_group_path, &nbGroups);
+    assert_null(groups);
+    assert_int_equal(nbGroups, -1);
 }

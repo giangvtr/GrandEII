@@ -67,6 +67,8 @@ target_link_libraries(UNIT_TESTS ${GTK3_LIBRARIES} cmocka m)
 
 # Linking wraps for Unit testing
 target_link_options(UNIT_TESTS PRIVATE -Wl,--wrap=rand)
+# Allocation failure injection (unit_test/mock_alloc.c)
+target_link_options(UNIT_TESTS PRIVATE -Wl,--wrap=malloc -Wl,--wrap=calloc -Wl,--wrap=realloc)
 #target_link_options(UNIT_TESTS PRIVATE -Wl,--wrap=my_malloc)
 
 #Adding compile option for coverage

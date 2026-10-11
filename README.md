@@ -71,6 +71,13 @@ genhtml coverage.info --output-directory out
 xdg-open out/index.html
 ```
 
+### Continuous Integration
+GitHub Actions (`.github/workflows/ci.yml`) builds the project and runs the unit tests,
+a valgrind memory check and a coverage report on every push and pull request to `main`.
+The coverage report can be downloaded from the run page (artifact `coverage-html`).
+It covers the model (the testable logic) only: `arduino/` (needs hardware), `view/` and
+`controller/` (GTK UI code) are excluded.
+
 ### Commit Workflow
 ```
 git status

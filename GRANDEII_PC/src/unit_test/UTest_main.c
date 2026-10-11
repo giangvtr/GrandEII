@@ -6,6 +6,7 @@
 #include "UTest-gmanager.h"
 #include "UTest-json_parser.h"
 #include "UTest-json_writer.h"
+#include "UTest-alloc_fail.h"
 
 /**
  * @brief Main function to execute all unit tests
@@ -147,12 +148,29 @@ int main_units_tests(void) {
         cmocka_unit_test(test_parse_multiple_groups),
         cmocka_unit_test(test_parse_group_with_no_lights),
         cmocka_unit_test(test_parse_lights_colors),
+        cmocka_unit_test(test_parse_missing_nbgroups),
+        cmocka_unit_test(test_parse_group_missing_name),
 
         //======== test json writer
         cmocka_unit_test(test_write_device_with_one_group),
         cmocka_unit_test(test_write_device_with_empty_group),
         cmocka_unit_test(test_write_device_with_no_groups),
         cmocka_unit_test(test_write_device_with_no_colors_or_functions),
+        cmocka_unit_test(test_write_device_unwritable_path),
+
+        //======== test allocation failures (mock_alloc)
+        cmocka_unit_test(test_alloc_color_fails),
+        cmocka_unit_test(test_alloc_function_fails),
+        cmocka_unit_test(test_allocGroup_fails),
+        cmocka_unit_test(test_allocList_fails),
+        cmocka_unit_test(test_alloc_light_fails),
+        cmocka_unit_test(test_createGroupManager_groups_array_fails),
+        cmocka_unit_test(test_createGroupManager_group_name_fails),
+        cmocka_unit_test(test_createGroupManager_second_group_fails),
+        cmocka_unit_test(test_addEmptyGroup_alloc_fails),
+        cmocka_unit_test(test_addEmptyGroup_init_fails),
+        cmocka_unit_test(test_assignGroupToManager_rename_fails),
+        cmocka_unit_test(test_parse_device_file_buffer_alloc_fails),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }

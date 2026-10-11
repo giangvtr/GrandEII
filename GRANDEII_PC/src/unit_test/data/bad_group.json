@@ -1,0 +1,12 @@
+{
+	"nbGroups":	2,
+	"0":	{
+		"name":	"Group 1",
+		"nbLights":	0,
+		"Lights":	[]
+	},
+	"1":	{
+		"nbLights":	0,
+		"Lights":	[]
+	}
+}
