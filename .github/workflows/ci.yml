@@ -30,8 +30,13 @@ jobs:
       - name: Memory leak check (valgrind)
         working-directory: GRANDEII_PC/src/build
         run: |
+          # Report goes to a file so it is not interleaved with the test output
+          status=0
           xvfb-run -a valgrind --leak-check=full --errors-for-leak-kinds=definite \
-            --error-exitcode=1 ./UNIT_TESTS
+            --track-origins=yes --error-exitcode=1 --log-file=valgrind.log \
+            ./UNIT_TESTS > /dev/null || status=$?
+          cat valgrind.log
+          exit $status
 
       - name: Coverage report
         working-directory: GRANDEII_PC/src/build
