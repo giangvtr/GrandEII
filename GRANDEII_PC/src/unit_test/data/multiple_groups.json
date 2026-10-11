@@ -1,0 +1,27 @@
+{
+	"nbGroups":	2,
+	"0":	{
+		"name":	"Group 1",
+		"nbLights":	1,
+		"Lights":	[{
+				"name":	"Light A",
+				"technology":	1,
+				"nbCouleurs":	0,
+				"nbFonctions":	0,
+				"Couleurs":	[],
+				"functs":	[]
+			}]
+	},
+	"1":	{
+		"name":	"Group 2",
+		"nbLights":	1,
+		"Lights":	[{
+				"name":	"Light B",
+				"technology":	1,
+				"nbCouleurs":	0,
+				"nbFonctions":	0,
+				"Couleurs":	[],
+				"functs":	[]
+			}]
+	}
+}

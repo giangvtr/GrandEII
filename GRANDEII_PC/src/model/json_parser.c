@@ -79,70 +79,78 @@ static int parse_light_JSON(cJSON* lightArrayJSON, int nbLights, Group* group){
 }
 
 Group **parse_device_file(const char *filename, int* nbGroups){
-    // Écriture dans le fichier
+    *nbGroups = -1;
+
     FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Erreur de lecture du fichier");
+        return NULL;
+    }
     fseek(file, 0,SEEK_END);
     long size = ftell(file);
     fseek(file, 0, SEEK_SET);
 
     char *buffer = malloc(size + 1);
-    if (file) {
-        fread(buffer, size, 1, file);
+    if (buffer == NULL) {
         fclose(file);
-    } else {
-        perror("Erreur d’écriture du fichier");
+        return NULL;
     }
+    size_t nbRead = fread(buffer, 1, size, file);
+    buffer[nbRead] = '\0';
+    fclose(file);
 
     cJSON *parsedJSON = cJSON_Parse(buffer);
+    free(buffer);
     if (parsedJSON == NULL){
         const char *error_ptr = cJSON_GetErrorPtr();
         if (error_ptr != NULL) fprintf(stderr, "Error before: %s\n", error_ptr);
         return NULL;
     }
 
-    //This is where the fun begins
-    Color* default_color = alloc_color();
-    set_color(default_color, 255, 0, 0);
+    //Shared by every parsed group, so it must outlive them: static, not heap
+    static Color default_color;
+    set_color(&default_color, 255, 0, 0);
 
-    int nbParsedGroups = cJSON_GetObjectItemCaseSensitive(parsedJSON, "nbGroups")->valueint;
-    if (nbParsedGroups <= 0){
-        fprintf(stderr, "Cannot parse JSON Correctly, missing groups");
-        *nbGroups = -1;
+    cJSON *nbGroupsJSON = cJSON_GetObjectItemCaseSensitive(parsedJSON, "nbGroups");
+    if (!cJSON_IsNumber(nbGroupsJSON) || nbGroupsJSON->valueint <= 0){
+        fprintf(stderr, "Cannot parse JSON Correctly, missing groups\n");
+        cJSON_Delete(parsedJSON);
         return NULL;
     }
-    *nbGroups = nbParsedGroups;
+    int nbParsedGroups = nbGroupsJSON->valueint;
 
-    Group** returnGroup = (Group**)malloc(sizeof(Group*)*nbParsedGroups);
+    Group** returnGroup = (Group**)calloc(nbParsedGroups, sizeof(Group*));
+    if (returnGroup == NULL) {
+        cJSON_Delete(parsedJSON);
+        return NULL;
+    }
 
     //Cycle through each groups
     for (int groupIndex = 0;groupIndex < nbParsedGroups; groupIndex++){
-
-
         //get current
-        char string_index[2];//No more than 99 groups I hope
+        char string_index[12];
         sprintf(string_index, "%d", groupIndex);
         cJSON *groupJSON = cJSON_GetObjectItemCaseSensitive(parsedJSON, string_index);
+        cJSON *nameJSON = cJSON_GetObjectItem(groupJSON, "Name");
+        cJSON *nbLightsJSON = cJSON_GetObjectItem(groupJSON, "nbLights");
+        cJSON *lightArray = cJSON_GetObjectItem(groupJSON, "Lights");
 
-        //Alloc group
         Group* group = allocGroup();
-        initGroup(group, cJSON_GetObjectItem(groupJSON, "Name")->valuestring, 100, default_color);
+        if (!cJSON_IsString(nameJSON) || !cJSON_IsNumber(nbLightsJSON) || !cJSON_IsArray(lightArray)
+            || group == NULL || initGroup(group, nameJSON->valuestring, 100, &default_color) != 0) {
+            fprintf(stderr, "Cannot parse group %d\n", groupIndex);
+            deleteGroup(group);
+            for (int i = 0; i < groupIndex; i++) deleteGroup(returnGroup[i]);
+            free(returnGroup);
+            cJSON_Delete(parsedJSON);
+            return NULL;
+        }
 
-        //Get light info and nb
-        int nbLights = cJSON_GetObjectItem(groupJSON, "nbLights")->valueint;
-        cJSON* lightArray = cJSON_GetObjectItem(groupJSON, "Lights");
-        parse_light_JSON(lightArray, nbLights, group);
-
-
-
-
+        parse_light_JSON(lightArray, nbLightsJSON->valueint, group);
         returnGroup[groupIndex] = group;
-        //Free some stuff
-        //cJSON_Delete(groupJSON);
-        //cJSON_Delete(lightArray);
     }
-    //Delete all
+    *nbGroups = nbParsedGroups;
     cJSON_Delete(parsedJSON);
-    free(buffer);
     return returnGroup;
 }
 

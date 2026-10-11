@@ -26,6 +26,9 @@ add_compile_definitions(CSS_PATH="${CSS_STYLE}")
 file(REAL_PATH "../data" DATA)
 add_compile_definitions(DATA_PATH="${DATA}")
 
+file(REAL_PATH "./unit_test/data" TEST_DATA)
+add_compile_definitions(TEST_DATA_PATH="${TEST_DATA}")
+
 # Source files
 file(GLOB_RECURSE ARDUINO_SOURCES "arduino/*.c")
 list(FILTER ARDUINO_SOURCES EXCLUDE REGEX ".*main\\.c$")

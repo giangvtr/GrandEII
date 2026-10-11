@@ -4,6 +4,8 @@
 #include "UTest-function.h"
 #include "UTest-group.h"
 #include "UTest-gmanager.h"
+#include "UTest-json_parser.h"
+#include "UTest-json_writer.h"
 
 /**
  * @brief Main function to execute all unit tests
@@ -136,6 +138,21 @@ int main_units_tests(void) {
         cmocka_unit_test_setup_teardown(test_printGroupManager_no_groups, setup_manager, teardown_manager),
       cmocka_unit_test_setup_teardown(test_printGroupManager, setup_manager, teardown_manager),
         cmocka_unit_test_setup_teardown(test_deleteGroupManager, setup_manager, teardown_manager),
+
+        //======== test json parser
+        cmocka_unit_test(test_parse_valid_file),
+        cmocka_unit_test(test_parse_invalid_group_count),
+        cmocka_unit_test(test_parse_malformed_json),
+        cmocka_unit_test(test_parse_nonexistent_file),
+        cmocka_unit_test(test_parse_multiple_groups),
+        cmocka_unit_test(test_parse_group_with_no_lights),
+        cmocka_unit_test(test_parse_lights_colors),
+
+        //======== test json writer
+        cmocka_unit_test(test_write_device_with_one_group),
+        cmocka_unit_test(test_write_device_with_empty_group),
+        cmocka_unit_test(test_write_device_with_no_groups),
+        cmocka_unit_test(test_write_device_with_no_colors_or_functions),
     };
     return cmocka_run_group_tests(tests, NULL, NULL);
 }
