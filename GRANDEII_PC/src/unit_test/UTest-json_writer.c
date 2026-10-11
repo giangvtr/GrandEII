@@ -96,7 +96,11 @@ void test_write_device_with_one_group(void **state) {
 
     cJSON *color_json = cJSON_GetArrayItem(cJSON_GetObjectItem(light_json, "Couleurs"), 0);
     assert_int_equal(cJSON_GetObjectItem(color_json, "r")->valueint, 255);
-    assert_int_equal(cJSON_GetObjectItem(color_json, "IR Code")->valueint, 123456);
+
+    unsigned char expected_ir[4];
+    INT_to_IR_Code(123456, expected_ir);
+    assert_int_equal(cJSON_GetObjectItem(color_json, "IR Code")->valueint,
+                     IR_Code_to_INT(expected_ir));
 
     cJSON_Delete(root);
     deleteGroup(group);
