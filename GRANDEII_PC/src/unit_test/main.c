@@ -5,7 +5,5 @@
 
 
 int main(){
-    main_units_tests();
-
-    return 0;
+    return main_units_tests();
  }

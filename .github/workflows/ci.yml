@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libcmocka-dev cmake pkg-config xvfb lcov valgrind
+
+      - name: Configure
+        run: cmake -S GRANDEII_PC/src -B GRANDEII_PC/src/build
+
+      - name: Build
+        run: cmake --build GRANDEII_PC/src/build -j
+
+      - name: Unit tests
+        working-directory: GRANDEII_PC/src/build
+        run: xvfb-run -a ./UNIT_TESTS
+
+      - name: Memory leak check (valgrind)
+        working-directory: GRANDEII_PC/src/build
+        run: |
+          xvfb-run -a valgrind --leak-check=full --errors-for-leak-kinds=definite \
+            --error-exitcode=1 ./UNIT_TESTS
+
+      - name: Coverage report
+        working-directory: GRANDEII_PC/src/build
+        run: |
+          lcov --capture --directory . --output-file coverage.info --ignore-errors mismatch,gcov,source
+          lcov --remove coverage.info '/usr/*' '*/unit_test/*' '*/cJSON/*' --output-file coverage.info --ignore-errors unused
+          genhtml coverage.info --output-directory coverage-html --ignore-errors source
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: GRANDEII_PC/src/build/coverage-html
