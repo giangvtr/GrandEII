@@ -15,8 +15,8 @@ GroupManager *createGroupManager(int numGroups) {
     GroupManager *manager = malloc(sizeof(GroupManager));
     if (!manager) return NULL; //if allocation fails
 
-    // Allocate memory for the groups array
-    manager->groups = (Group **)malloc(numGroups * sizeof(Group*));
+    // Allocate memory for the groups array (room for MAX_GROUP so addEmptyGroup can grow it)
+    manager->groups = (Group **)calloc(MAX_GROUP, sizeof(Group*));
     if (manager->groups == NULL) {
         fprintf(stderr, "Memory allocation failed for groups array\n");
         free(manager);
@@ -27,22 +27,18 @@ GroupManager *createGroupManager(int numGroups) {
         char groupName[20];
         sprintf(groupName, "Group %d", i + 1);
 
-        // Initialize each group (assuming Group has an initialization function)
         Group *newGroup = allocGroup();
-        if (initGroup(newGroup, groupName, 0, NULL) == 0) manager->groups[i] = newGroup;
-
-
-        //If allocate group fails
-        if (!manager->groups[i] || initGroup(manager->groups[i], groupName, 0, NULL) != 0) {
+        if (newGroup == NULL || initGroup(newGroup, groupName, 0, NULL) != 0) {
+            deleteGroup(newGroup); // also frees the group itself; NULL-safe
             // Cleanup previously allocated groups
             for (int j = 0; j < i; j++) {
                 deleteGroup(manager->groups[j]);
-                free(manager->groups[j]);
             }
             free(manager->groups);
             free(manager);
             return NULL;
         }
+        manager->groups[i] = newGroup;
     }
     manager->numGroups = numGroups;
     return manager;
@@ -63,7 +59,6 @@ int addEmptyGroup(GroupManager *manager) {
     sprintf(groupName, "Group %d", manager->numGroups + 1);
 
     Group *newGroup = allocGroup();
-    if (initGroup(newGroup, groupName, 0, NULL) == 0) manager->groups[manager->numGroups] = newGroup;
     if (newGroup == NULL) {
         fprintf(stderr, "Failed to allocate new group\n");
         return -1;
@@ -71,7 +66,7 @@ int addEmptyGroup(GroupManager *manager) {
 
     if (initGroup(newGroup, groupName, 0, NULL) != 0) {
         fprintf(stderr, "Failed to initialize new group\n");
-        free(newGroup);
+        deleteGroup(newGroup); // also frees the group itself
         return -1;
     }
 
