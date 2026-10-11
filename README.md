@@ -1,4 +1,5 @@
-# Project C — Grand EII
+# Project C - Grand EII
+[![CI](https://github.com/giangvtr/GrandEII/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/giangvtr/GrandEII/actions/workflows/ci.yml)
 *This repository is forked from the original Gitlab repository*
 
 Developed by **BM, DM, EA, HB, and VG**.   
