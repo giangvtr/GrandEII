@@ -100,12 +100,13 @@ Group **parse_device_file(const char *filename, int* nbGroups){
     fclose(file);
 
     cJSON *parsedJSON = cJSON_Parse(buffer);
-    free(buffer);
     if (parsedJSON == NULL){
         const char *error_ptr = cJSON_GetErrorPtr();
         if (error_ptr != NULL) fprintf(stderr, "Error before: %s\n", error_ptr);
+        free(buffer);
         return NULL;
     }
+    free(buffer);
 
     //Shared by every parsed group, so it must outlive them: static, not heap
     static Color default_color;
